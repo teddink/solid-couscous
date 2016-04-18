@@ -1,0 +1,57 @@
+﻿<!DOCTYPE html>
+<!-- Copyright © Microsoft Corporation. All rights reserved. -->
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Internet Explorer Developer Sample</title>
+    <link rel="stylesheet" type="text/css" href="css/base-sdk.css" />
+    <link rel="stylesheet" type="text/css" href="css/program.css" />
+    <script type="text/javascript" src="script/base-sdk.js"></script>
+    <script type="text/javascript" src="script/program1.js"></script>
+</head>
+<body role="application">
+    <div id="header" role="contentinfo"></div>
+
+    <!--Sample title-->
+    <h1 id="sampleTitle">Pointers and Gestures</h1>
+
+    <h2>Scenario 1: Using the Gesture object</h2>
+    <p>
+        <a href="default.html">Back to scenarios menu</a>
+    </p>
+
+    <div class="descRegion" role="region" aria-labelledby="descLabel" aria-live="assertive">
+        <h2 id="descLabel">Description</h2>
+        <div class="descContent">
+
+        <!--Description and code snippet-->
+        <p>This sample shows how to create a gesture object and assign a pointer to it. It also shows how to create the basic event handlers that you'll use to 
+          manage touch interaction. Touch the box and slide it around the screen. Tap the box to change color. Windows provides inertia of an 
+          object after you let go.
+        </p>
+        <h2 class="codeLabel">Code</h2>
+<pre>
+      //  Get the div object, and assign the pointerdown event to it
+      var testbox = document.getElementById("divBack");
+      testbox.addEventListener("pointerdown", onDivPointerDown, true);
+
+      function onDivPointerDown(e) {
+      //  Assign the current pointer to the gesture object
+      this.gestureObject.addPointer(e.pointerId);
+    }
+     
+</pre>
+        </div>
+    </div>
+
+    <!--Rendered result-->
+    <div class="resultRegion" role="region" aria-labelledby="resultLabel" aria-live="assertive">
+        <h2 id="resultLabel">Result</h2>
+        <div class="resultContent">
+             <div id="testbox"></div>
+        </div>
+    </div>
+
+    <div id="footer" role="contentinfo"></div>
+</body>
+</html>

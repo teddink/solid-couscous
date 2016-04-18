@@ -1,0 +1,95 @@
+﻿<!DOCTYPE html>
+<!-- Copyright © Microsoft Corporation. All rights reserved. -->
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Internet Explorer Developer Sample</title>
+    <link rel="stylesheet" type="text/css" href="css/base-sdk.css" />
+    <link rel="stylesheet" type="text/css" href="css/program.css" />
+    <script type="text/javascript" src="script/base-sdk.js"></script>
+    <script type="text/javascript" src="script/program2.js"></script>
+</head>
+<body role="application">
+    <div id="header" role="contentinfo"></div>
+
+    <!--Sample title-->
+    <h1 id="sampleTitle">Pointers and Gestures</h1>
+
+    <h2>Scenario 2: Supporting rotation and scaling gestures</h2>
+    <p>
+        <a href="default.html">Back to scenarios menu</a>
+    </p>
+
+    <div class="descRegion" role="region" aria-labelledby="descLabel" aria-live="assertive">
+        <h2 id="descLabel">Description</h2>
+        <div class="descContent">
+
+        <!--Description and code snippet-->
+        <p>This example lets you drag the box around the screen, as well as use two fingers to resize and rotate it. Internet Explorer returns the current scale factor through 
+          the scale property on the MSGesture object. This value is passed directly to the scale property on the CSS transform for the &lt;div&gt; element. 
+          Similarly, Internet Explorer also returns the rotation property in radians as the object is rotated. The CSS rotate property for the transform takes angles 
+          in degrees, so radians are converted first. Tap the box to resize it to original size. Refresh the page if the box goes off screen. 
+        </p>
+          <p>This demo uses the pointerdown event to initiate the MSGesture object. The MSGestureChange event is handled to move, zoom, and rotate the &lt;div&gt; element. 
+            The MSGestureTap event is handled to reset the size of the &lt;div&gt; element. 
+          </p>
+          <p>In the program.css file, the &lt;body&gt; element tag has the user-select property set to none. This prevents selecting text while interacting with the page. 
+            The -ms-touch-action CSS property on the &lt;div&gt; element indicates default touch behaviours, like panning or zooming
+            should not occur and that the page receive pointer events. 
+          </p>
+          <p>
+            Internet Explorer provides inertia, or momentum of an element that depends on the element and how fast you swipe. When you swipe with some speed and lift your finger,
+            Internet Explorer keeps the element moving. To prevent the inertia, the MSGestureChange handler looks for 
+            the event detail message "MSGESTURE_FLAG_INERTIA." This flag is sent when the element is moving, but the user has removed their contact with the screen. To cancel the effects of inertia, uncomment out the first two lines in the onDivGestureChange()
+            event handler. When this flag is recognized, the handler returns, rather than processing movement, scale, and rotation.  
+
+          </p>
+        <h2 class="codeLabel">Code</h2>
+<pre>
+      //  as the user interacts with the element, show the action
+      testbox.addEventListener("MSGestureChange", onDivGestureChange, false);
+
+      function onDivGestureChange(e) {
+        // Comment out the following code if you want to enable the built-in inertia provided by dynamic gesture recognition
+         if (e.detail == e.MSGESTURE_FLAG_INERTIA)
+         return;
+
+        //   Update the transform on the div element
+        var currentXform = new MSCSSMatrix(e.target.style.msTransform);  //  Get the latest CSS transform for the div element
+
+        //  Keep scale from getting too small (else user can lose track of it!)
+        currentScale = Math.sqrt(currentXform.m11 * currentXform.m22 - currentXform.m12 * currentXform.m21);
+
+        if (e.scale * currentScale >= 0.1) {
+          //  Scale is ok, so assign the scale property to the transform
+          e.target.style.msTransform = currentXform.translate(e.offsetX, e.offsetY).  //  Move the transform origin under the center of the gesture
+          rotate(e.rotation * 180 / Math.PI).  //  Apply rotation
+          scale(e.scale).  // apply scale
+          translate(e.translationX, e.translationY). // Apply translation
+          translate(-e.offsetX, -e.offsetY);  // Move the transform origin back
+        }
+
+        else {
+          // Scale is too small, so ignore scale
+          e.target.style.msTransform = currentXform.translate(e.offsetX, e.offsetY). // Move the transform origin under the center of the gesture   
+          rotate(e.rotation * 180 / Math.PI).  //  Apply rotation
+          translate(e.translationX, e.translationY). // Apply translation
+          translate(-e.offsetX, -e.offsetY);  // Move the transform origin back
+        }
+      }
+</pre>
+        </div>
+    </div>
+
+    <!--Rendered result-->
+    <div class="resultRegion" role="region" aria-labelledby="resultLabel" aria-live="assertive">
+        <h2 id="resultLabel">Result</h2>
+    
+        <div class="resultContent">
+              <div id="testbox" class="background" ></div>
+        </div>
+    </div>
+
+    <div id="footer" role="contentinfo"></div>
+</body>
+</html>
